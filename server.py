@@ -1,8 +1,70 @@
 import os
-
 from flask import Flask
+from flask import request
+from flask import jsonify
+from git import Repo
+
+import returncodes as status
+import stats as stats
 
 def create_app(test_config=None):
+
+    app = init(test_config)
+    
+    repo = None
+
+    @app.route('/')
+    def home():
+        return "This is a server. Why are you here?"
+
+    @app.route('/set-repo')
+    def set_repo():
+        repo_url = request.args.get('url')
+        if repo_url is None:
+            return jsonify(status=status.bad_request, message="URL not requested", payload=[])
+        
+        repo = set_repo_impl(repo_url)
+        if repo.bare:
+            return jsonify(status=status.clone_failed, message="Clone Failed", payload=[])
+
+        return jsonify(status=status.clone_success, message='OK', payload=[])
+
+    @app.route('/delete-repo')
+    def delete_repo():
+        delete_repo_impl(repo)
+        return jsonify(status=status.request_success, message='OK', payload=[])
+
+    @app.route('/contributions/daily')
+    def contributions_daily():
+        return jsonify(status=status.request_success, message='OK', payload=stats.contributions_daily_impl(repo))
+
+    @app.route('/contributions/authors')
+    def contributions_authors():
+        return jsonify(status=status.request_success, message='OK', payload=stats.contributions_authors_impl(repo))
+
+    @app.route('/commit/languages')
+    def commit_languages():
+        return jsonify(status=status.request_success, message='OK', payload=stats.commit_languages_impl(repo))
+
+    @app.route('/commit/lengths')
+    def commit_lengths():
+        return jsonify(status=status.request_success, message='OK', payload=stats.commit_lengths_impl(repo))
+
+    @app.route('/messages/words')
+    def messages_words():
+        return jsonify(status=status.request_success, message='OK', payload=stats.messages_words_impl(repo))
+
+    @app.route('/commit/times')
+    def commit_times():
+        return jsonify(status=status.request_success, message='OK', payload=stats.commit_times_impl(repo))
+
+    @app.route('/messages/emotions')
+    def messages_emotions():
+        return jsonify(status=status.request_success, message='OK', payload=stats.messages_emotions_impl(repo))
+
+    return app
+
+def init(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
@@ -21,10 +83,5 @@ def create_app(test_config=None):
         os.makedirs(app.instance_path)
     except OSError:
         pass
-
-    # a simple page that says 'git good'
-    @app.route('/')
-    def home():
-        return 'git good'
 
     return app
