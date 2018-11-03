@@ -43,11 +43,6 @@ def create_app(test_config=None):
         repo = request.args.get('url')
         return jsonify(status=status.request_success, message='OK', payload=stats.contributions_authors_impl(set_repo_impl(repo)))
 
-    @app.route('/commit/languages')
-    def commit_languages():
-        repo = request.args.get('url')
-        return jsonify(status=status.request_success, message='OK', payload=stats.commit_languages_impl(set_repo_impl(repo)))
-
     @app.route('/commit/lengths')
     def commit_lengths():
         repo = request.args.get('url')
