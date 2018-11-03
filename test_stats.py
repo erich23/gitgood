@@ -9,6 +9,8 @@ def main():
     print(stats.messages_words_impl(repo))
     print(stats.commit_lengths_impl(repo))
     print(stats.contributions_daily_impl(repo))
+    print(stats.contributions_authors_impl(repo))
+    print(stats.commit_times_impl(repo))
 
 if __name__ == '__main__':
     main()
