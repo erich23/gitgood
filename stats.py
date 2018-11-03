@@ -1,6 +1,8 @@
 from git import Repo
 from datetime import date, timedelta, datetime
 import os
+import json
+from watson_developer_cloud import ToneAnalyzerV3
 
 def messages_words_impl(repo):
     wordcount = {}
@@ -60,4 +62,27 @@ def set_repo_impl(url):
         return Repo.clone_from(url=url, to_path=to_path)
 
 def messages_emotions_impl(repo):
-    pass
+    emocount = {}
+    tone_analyzer = ToneAnalyzerV3(
+        version='2017-09-21',
+        iam_apikey='DcBElRtuiVML7n5jDDUsRRAi_qYuJ2v1V-zaac17QIP2',
+        url='https://gateway.watsonplatform.net/tone-analyzer/api'
+    )
+    for commit in repo.iter_commits('master'):
+        text = commit.message
+        print(text)
+        tone_analysis = tone_analyzer.tone(
+            {'text': text},
+            'application/json'
+        ).get_result()
+        print(tone_analysis)
+        try:
+            emotion = tone_analysis['document_tone']['tones'][0]['tone_name']
+            if emotion not in emocount:
+                emocount[emotion] = 1
+            else:
+                emocount[emotion] += 1
+        except IndexError as e:
+            pass
+        
+    return emocount
