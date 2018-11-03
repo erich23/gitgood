@@ -21,7 +21,7 @@ def create_app(test_config=None):
         if repo_url is None:
             return jsonify(status=status.bad_request, message="URL not requested", payload=[])
         
-        repo = set_repo_impl(repo_url)
+        repo = stats.set_repo_impl(repo_url)
         if repo.bare:
             return jsonify(status=status.clone_failed, message="Clone Failed", payload=[])
 
@@ -30,38 +30,38 @@ def create_app(test_config=None):
     @app.route('/delete-repo')
     def delete_repo():
         repo = request.args.get('url')
-        delete_repo_impl(set_repo_impl(repo))
+        delete_repo_impl(stats.set_repo_impl(repo))
         return jsonify(status=status.request_success, message='OK', payload=[])
 
     @app.route('/contributions/daily')
     def contributions_daily():
         repo = request.args.get('url')
-        return jsonify(status=status.request_success, message='OK', payload=stats.contributions_daily_impl(set_repo_impl(repo)))
+        return jsonify(status=status.request_success, message='OK', payload=stats.contributions_daily_impl(stats.set_repo_impl(repo)))
 
     @app.route('/contributions/authors')
     def contributions_authors():
         repo = request.args.get('url')
-        return jsonify(status=status.request_success, message='OK', payload=stats.contributions_authors_impl(set_repo_impl(repo)))
+        return jsonify(status=status.request_success, message='OK', payload=stats.contributions_authors_impl(stats.set_repo_impl(repo)))
 
     @app.route('/commit/lengths')
     def commit_lengths():
         repo = request.args.get('url')
-        return jsonify(status=status.request_success, message='OK', payload=stats.commit_lengths_impl(set_repo_impl(repo)))
+        return jsonify(status=status.request_success, message='OK', payload=stats.commit_lengths_impl(stats.set_repo_impl(repo)))
 
     @app.route('/messages/words')
     def messages_words():
         repo = request.args.get('url')
-        return jsonify(status=status.request_success, message='OK', payload=stats.messages_words_impl(set_repo_impl(repo)))
+        return jsonify(status=status.request_success, message='OK', payload=stats.messages_words_impl(stats.set_repo_impl(repo)))
 
     @app.route('/commit/times')
     def commit_times():
         repo = request.args.get('url')
-        return jsonify(status=status.request_success, message='OK', payload=stats.commit_times_impl(set_repo_impl(repo)))
+        return jsonify(status=status.request_success, message='OK', payload=stats.commit_times_impl(stats.set_repo_impl(repo)))
 
     @app.route('/messages/emotions')
     def messages_emotions():
         repo = request.args.get('url')
-        return jsonify(status=status.request_success, message='OK', payload=stats.messages_emotions_impl(set_repo_impl(repo)))
+        return jsonify(status=status.request_success, message='OK', payload=stats.messages_emotions_impl(stats.set_repo_impl(repo)))
 
     return app
 
