@@ -55,10 +55,11 @@ def commit_times_impl(repo):
 def set_repo_impl(url):
     to_path = '/tmp/' + url
     if os.path.exists(to_path):
-        return Repo(to_path)
+        repo = Repo(to_path)
+        repo.remotes.origin.pull()
+        return repo
     else:
         return Repo.clone_from(url=url, to_path=to_path)
 
 def messages_emotions_impl(repo):
-    counts = wordcount(repo)
     pass
