@@ -21,8 +21,8 @@ def create_app(test_config=None):
         if repo_url is None:
             return jsonify(status=status.bad_request, message="URL not requested", payload=[])
         
-        clonestatus = set_repo_impl(repo_url)
-        if clonestatus is False:
+        repo = set_repo_impl(repo_url)
+        if repo.bare:
             return jsonify(status=status.clone_failed, message="Clone Failed", payload=[])
 
         return jsonify(status=status.clone_success, message='OK', payload=[])
