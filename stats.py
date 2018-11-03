@@ -23,13 +23,11 @@ def commit_lengths_impl(repo):
 def contributions_daily_impl(repo):
     per_day = {}
     for commit in repo.iter_commits('master'):
-        dt = datetime.fromtimestamp(commit.committed_date)
-        if dt - datetime.today() < timedelta(days=365):
-            d = str(dt.date())
-            if d not in per_day:
-                per_day[d] = 1
-            else:
-                per_day[d] += 1
+        d = datetime.fromtimestamp(commit.committed_date).date()
+        if d not in per_day:
+            per_day[d] = 1
+        else:
+            per_day[d] += 1
     return per_day
 
 def contributions_authors_impl(repo):
