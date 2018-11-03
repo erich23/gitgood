@@ -25,7 +25,7 @@ def commit_lengths_impl(repo):
 def contributions_daily_impl(repo):
     per_day = {}
     for commit in repo.iter_commits('master'):
-        d = datetime.fromtimestamp(commit.committed_date).date()
+        d = str(datetime.fromtimestamp(commit.committed_date).date())
         if d not in per_day:
             per_day[d] = 1
         else:
@@ -70,12 +70,11 @@ def messages_emotions_impl(repo):
     )
     for commit in repo.iter_commits('master'):
         text = commit.message
-        print(text)
         tone_analysis = tone_analyzer.tone(
             {'text': text},
-            'application/json'
+            'application/json',
+            False
         ).get_result()
-        print(tone_analysis)
         try:
             emotion = tone_analysis['document_tone']['tones'][0]['tone_name']
             if emotion not in emocount:
@@ -83,6 +82,9 @@ def messages_emotions_impl(repo):
             else:
                 emocount[emotion] += 1
         except IndexError as e:
-            pass
+            if 'None' not in emocount:
+                emocount['None'] = 1
+            else:
+                emocount['None'] += 1
         
     return emocount
