@@ -23,13 +23,11 @@ def commit_lengths_impl(repo):
 def contributions_daily_impl(repo):
     per_day = {}
     for commit in repo.iter_commits('master'):
-        dt = datetime.fromtimestamp(commit.committed_date)
-        if dt - datetime.today() < timedelta(days=365):
-            d = str(dt.date())
-            if d not in per_day:
-                per_day[d] = 1
-            else:
-                per_day[d] += 1
+        d = datetime.fromtimestamp(commit.committed_date).date()
+        if d not in per_day:
+            per_day[d] = 1
+        else:
+            per_day[d] += 1
     return per_day
 
 def contributions_authors_impl(repo):
@@ -55,10 +53,11 @@ def commit_times_impl(repo):
 def set_repo_impl(url):
     to_path = '/tmp/' + url
     if os.path.exists(to_path):
-        return Repo(to_path)
+        repo = Repo(to_path)
+        repo.remotes.origin.pull()
+        return repo
     else:
         return Repo.clone_from(url=url, to_path=to_path)
 
 def messages_emotions_impl(repo):
-    counts = wordcount(repo)
     pass
