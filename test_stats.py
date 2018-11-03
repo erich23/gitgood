@@ -4,11 +4,11 @@ import stats
 from git import Repo
 
 def main():
-    repo = stats.set_repo(input('.git URL: '))
+    repo = stats.set_repo_impl(input('.git URL: '))
     assert not repo.bare
-    print(len(stats.commit_words(repo)))
-    print(stats.commit_lengths(repo))
-    stats.contributions_daily(repo)
+    print(stats.messages_words_impl(repo))
+    print(stats.commit_lengths_impl(repo))
+    print(stats.contributions_daily_impl(repo))
 
 if __name__ == '__main__':
     main()
