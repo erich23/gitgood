@@ -63,6 +63,13 @@ def create_app(test_config=None):
         repo = request.args.get('url')
         return jsonify(status=status.request_success, message='OK', payload=stats.messages_emotions_impl(stats.set_repo_impl(repo)))
 
+    @app.after_request
+    def after_request(response):
+        header = response.headers
+        header['Access-Control-Allow-Origin'] = '*'
+        return response
+
+
     return app
 
 def init(test_config=None):
