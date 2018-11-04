@@ -68,15 +68,18 @@ def messages_emotions_impl(repo):
         iam_apikey='DcBElRtuiVML7n5jDDUsRRAi_qYuJ2v1V-zaac17QIP2',
         url='https://gateway.watsonplatform.net/tone-analyzer/api'
     )
+    text = ''
     for commit in repo.iter_commits('master'):
-        text = commit.message
-        tone_analysis = tone_analyzer.tone(
-            {'text': text},
-            'application/json',
-            False
-        ).get_result()
+        text += commit.message
+    tone_analysis = tone_analyzer.tone(
+        {'text': text},
+        'application/json',
+        True
+    ).get_result()
+    emotions = tone_analysis['sentences_tone']
+    for sentence in emotions:
         try:
-            emotion = tone_analysis['document_tone']['tones'][0]['tone_name']
+            emotion = sentence['tones'][0]['tone_name']
             if emotion not in emocount:
                 emocount[emotion] = 1
             else:
