@@ -27,10 +27,14 @@ class Emotions extends React.Component {
 
                 console.log(resp)
 
+				let sum = 0;
+				for (var key in input) {
+					sum += input[key];
+				}
                 let data = [];
                 for (var key in input) {
 
-                    data.push({ y: input[key], label: key });
+                    data.push({ y: 100 * input[key]/sum, label: key });
 
                 }
 

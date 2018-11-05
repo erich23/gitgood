@@ -50,10 +50,10 @@ class App extends Component {
 
         {/* <div>
           <WordCloud />
-        </div>
+        </div> */}
         <div>
           <Emotions />
-        </div> */}
+        </div> 
 
         <div>
           <Contributions />
